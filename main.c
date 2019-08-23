@@ -79,10 +79,9 @@ ver. 002a
     uint16_t longPessTmr = 0;
     uint8_t key = 0;
     uint8_t longKey = 0; 
-	  uint8_t buff[7]; 
-   
-					          //  keyData
-				          struct gateKey
+	  uint8_t buff[7];
+					          
+			  struct gateKey
                           {
                           uint8_t hdr[5];
                           uint8_t rollingKeys[4][2];
