@@ -9,9 +9,7 @@ ver. 002a
 
 */
 //*****************************************************************************
-  //   #define TWOGATES 
-		
-		
+ 		
 		/*   timing values   */
 		#define	__PRESET1	
         #define	__TIMINGS0
