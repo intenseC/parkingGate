@@ -17,21 +17,21 @@ ver. 002a
 		
 		#define F_CPU 9600000UL
         #ifdef __TIMINGS1
-		#define GAP   21200   // delay between packets  // 22800
-		#define DELAY   308  // segment length   // 320 
-		#define PAD     DELAY * 2  //  640   620   //   
-		#define HEADER_OFFS   420  // 
-		#define TMR_OFFS   100  // 
- 		#define HEADER           1750  // 1850 - TMR_OFFS
+		#define GAP   21200   // delay between packets
+		#define DELAY   308  // segment length
+		#define PAD     DELAY * 2
+		#define HEADER_OFFS   420
+		#define TMR_OFFS   100
+ 		#define HEADER           1750
  		
 		#elif defined __TIMINGS0
-		#define DELAY                  405  // segment length   // 0.43 ms 
-		#define PAD                      DELAY * 2  //  
- 		#define HEADER               DELAY * 6          // 2.55 ms  2450
-    #define GAP        HEADER * 10           //24300   // delay between packets  // 25.5 ms
+		#define DELAY                405         // segment length   // 0.43 ms 
+		#define PAD                  DELAY * 2
+ 		#define HEADER               DELAY * 6   // 2.55 ms
+                #define GAP        HEADER * 10           // delay between packets  // 25.5 ms
 		#endif
 		
-		#define MAXBIT           52  //
+		#define MAXBIT           52
 //*****************************************************************************
  
     #ifdef __PRESET1		
@@ -51,7 +51,7 @@ ver. 002a
           /*   macros   */  
         #define maxval(val, max, min)  \
         if( val > max ) { val = min; } \
-        if( val < min )  { val = max; }\
+        if( val < min ) { val = max; } \
 				while (0)
         #define sbi(var, mask) ((var) |= (1 << mask))  // Set   bit
         #define cbi(var, mask) ((var) &= ~(1 << mask)) // Clear bit
@@ -59,7 +59,7 @@ ver. 002a
         #define PUSHZERO()      cbi(PORT_PWM, PIN_PWM);  _delay_us(PAD); \
         sbi(PORT_PWM, PIN_PWM); _delay_us(DELAY)
         											          
-		    #define PUSHONE()     cbi(PORT_PWM, PIN_PWM); _delay_us(DELAY); \
+	#define PUSHONE()     cbi(PORT_PWM, PIN_PWM); _delay_us(DELAY); \
         sbi(PORT_PWM, PIN_PWM); _delay_us(PAD)
 											                
 //*****************************************************************************
@@ -79,7 +79,7 @@ ver. 002a
     uint16_t longPessTmr = 0;
     uint8_t key = 0;
     uint8_t longKey = 0; 
-	  uint8_t buff[7];
+    uint8_t buff[7];
 					          
 			  struct gateKey
                           {
@@ -109,15 +109,15 @@ ver. 002a
 //*****************************************************************************
 // define pins below
 //*****************************************************************************
-#define PORT_AUX_LED                      PORTB
-#define AUX_LED	                          PINB                         // aux pin / reserved
-#define PIN_LED	                          PB4
+#define PORT_AUX_LED                     PORTB
+#define AUX_LED	                         PINB                         // aux pin / reserved
+#define PIN_LED	                         PB4
 
-#define PORT_PWM                   PORTB
-#define PWM	                       PINB                        // pwm out to radio 
-#define PIN_PWM	                   PB0
+#define PORT_PWM                         PORTB
+#define PWM	                         PINB                        // pwm out to radio 
+#define PIN_PWM	                         PB0
 
-#define PORT_TRIG        	       PORTB
+#define PORT_TRIG        	         PORTB
 #define TRIG	                	 PINB                        // trigger key
 #define PIN_TRIG	    	         PB1
 
@@ -126,15 +126,15 @@ ver. 002a
 
 void init_io(void)
 {
- PORTB = 0b00101110;   													     /* activate pull-ups on 5 - 3 - 2 - 1-*/
- DDRB   = 0b00010001;       													/*  pins  0 & 4   output,  rest are  input */  
+ PORTB =  0b00101110;   	 /* activate pull-ups on 5 - 3 - 2 - 1-*/
+ DDRB   = 0b00010001;       	 /*  pins  0 & 4   output,  rest are  input */  
 }
 
 void timer_init (void)
      {   
 	  cli();
     TCCR0B |= (1 << CS02) | (0 << CS01) | (1 << CS00);            //enable timer0 with 1024 prescaler - 9375Hz
-		TCNT0 = 0;
+    TCNT0 = 0;
 	  sei();
      }
 //*****************************************************************************
@@ -151,13 +151,13 @@ void transmitPacket(uint8_t *packet, uint8_t size)
    
     for( int i = 0; i < 4; i++ ) { PUSHZERO(); n++; }       /* INSERT FOUR ZEROES */
 	     // byte parser
-    for( int i = offs; i < size; i++ )  // optimization needed / chose either size or MAXBIT, no need both
+    for( int i = offs; i < size; i++ )  // optimization needed / chose either size or MAXBIT, no need for both
         { 	                                                                            
 	  for( int y = 7; y >= 0 && n < MAXBIT; y-- )  {  
 		   if((packet[i] >> y) & 1) {  PUSHONE(); } else {  PUSHZERO(); }             n++;  }
 		}
       cbi(PORT_PWM, PIN_PWM);  sbi(PORT_AUX_LED, PIN_LED);
-	_delay_us(GAP);
+      _delay_us(GAP);
 }
 
 
@@ -168,9 +168,9 @@ void transmitPacket(uint8_t *packet, uint8_t size)
       {
             uint16_t x;
             ptrKey = lap ? &keyWork : &keyHome;
-				  uint8_t frame = sizeof(ptrKey->rollingKeys) / sizeof(ptrKey->rollingKeys[0]) - 1; 
-					   for(x = 0; x <= frame; x++ ) {
-             memcpy(buff, ptrKey->hdr, sizeof(ptrKey->hdr)); 
+	    uint8_t frame = sizeof(ptrKey->rollingKeys) / sizeof(ptrKey->rollingKeys[0]) - 1; 
+		 for(x = 0; x <= frame; x++ ) {
+            memcpy(buff, ptrKey->hdr, sizeof(ptrKey->hdr)); 
 	         memcpy(buff + sizeof(ptrKey->hdr), ptrKey->rollingKeys[x], sizeof(ptrKey->rollingKeys[x]));
 	         for(int y = PULSETRAIN; y > 0; y--)   transmitPacket(buff, 7); 
 	         wdt_reset(); 
