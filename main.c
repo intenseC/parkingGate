@@ -24,7 +24,7 @@ ver. 002a
 		#define TMR_OFFS   100
  		#define HEADER           1750
  		
-		#elif defined __TIMINGS0
+	#elif defined __TIMINGS0
 		#define DELAY                405         // segment length   // 0.43 ms 
 		#define PAD                  DELAY * 2
  		#define HEADER               DELAY * 6   // 2.55 ms
@@ -37,10 +37,10 @@ ver. 002a
     #ifdef __PRESET1		
 	#define PULSETRAIN   12
 	#define REFRAIN   500
-	#elif defined __PRESET2
+    #elif defined __PRESET2
 	#define PULSETRAIN   6
 	#define REFRAIN   250
-	#elif defined __PRESET3
+    #elif defined __PRESET3
 	#define PULSETRAIN   4
 	#define REFRAIN   125
 	#endif	
