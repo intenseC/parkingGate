@@ -2,7 +2,7 @@
 /*
 ATtiny13               433mHz    Parking     Lot   Gate  Opener
 *
-by Larry_! 'intenceC'
+Simon  Katznelson  'intenceC'
 *
 ver. 002a      
 +   this device exploits so called 'sync bug' in rolling code   +
