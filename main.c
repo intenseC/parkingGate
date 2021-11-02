@@ -17,18 +17,18 @@
 		
 #define F_CPU 9600000UL
 #ifdef __TIMINGS1
-#define GAP             21200   // delay between packets
-#define DELAY           308  // segment length
+#define GAP             21200 			  // delay between packets
+#define DELAY           308  	  		  // segment length
 #define PAD             DELAY * 2
 #define HEADER_OFFS     420
 #define TMR_OFFS        100
 #define HEADER          1750
  		
 #elif defined __TIMINGS0
-#define DELAY            405         // segment length   // 0.43 ms 
+#define DELAY            405        		 // segment length   // 0.43 ms 
 #define PAD              DELAY * 2
-#define HEADER           DELAY * 6   // 2.55 ms
-#define GAP       	 HEADER * 10           // delay between packets  // 25.5 ms
+#define HEADER           DELAY * 6  		 // 2.55 ms
+#define GAP       	 HEADER * 10             // delay between packets  // 25.5 ms
 #endif
 		
 #define MAXBIT           52
@@ -76,9 +76,9 @@ sbi(PORT_PWM, PIN_PWM); _delay_us(PAD)
 //*****************************************************************************
 // put variables  below
 //*****************************************************************************
-    uint16_t longPessTmr = 0;
-    uint8_t key = 0;
-    uint8_t longKey = 0; 
+    uint16_t longPessTmr;
+    uint8_t key;
+    uint8_t longKey; 
     uint8_t buff[7];
 					          
 struct gateKey  {
@@ -87,7 +87,7 @@ struct gateKey  {
 }  *ptrKey;
 
                 /*   the actual keycodes. You should replace these with yours  */
-struct gateKey keyHome =  {                             //    home
+static const struct gateKey keyHome =  {                             //    home
     { 0x00, 0xA5, 0xC6, 0xC2, 0x80 }, 
       {
         { 0B00010100, 0B01010010 },
@@ -97,7 +97,7 @@ struct gateKey keyHome =  {                             //    home
       }
 };
 
-struct gateKey keyWork  = {                         	 //    work
+static const struct gateKey keyWork  = {                         	 //    work
     { 0x00, 0xAE, 0x62, 0x5F, 0x80 },
       {
         { 0xcc, 0xd0 },
@@ -142,7 +142,6 @@ sei();
 //*****************************************************************************
 
 /*  pulse width modulator */
-
 static void transmitPacket(uint8_t *packet, uint8_t size)
 {
     uint8_t offs = 1;  // one byte discarded, nibble of zeroes inserted instead
@@ -166,8 +165,8 @@ static void transmitPacket(uint8_t *packet, uint8_t size)
         n++;
       }
     }
-      cbi(PORT_PWM, PIN_PWM);
-      sbi(PORT_AUX_LED, PIN_LED);
+       cbi(PORT_PWM, PIN_PWM);
+       sbi(PORT_AUX_LED, PIN_LED);
       _delay_us(GAP);
 }
 
@@ -185,7 +184,7 @@ static void transmit(uint8_t lap)
 	    memcpy(buff + sizeof(ptrKey->hdr), ptrKey->rollingKeys[x],
               sizeof(ptrKey->rollingKeys[x]));
 	      for(int y = PULSETRAIN; y > 0; y--)
-               transmitPacket(buff, 7); 
+                  transmitPacket(buff, 7); 
 	          wdt_reset(); 
 	         _delay_ms(REFRAIN); 
         }
