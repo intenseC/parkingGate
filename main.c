@@ -155,7 +155,7 @@ static void transmitPacket(uint8_t *packet, uint8_t size)
         n++;
     }
 	     // byte parser
-    for( int i = offs; i < size; i++ ) { // optimization needed / chose either size or MAXBIT, no need for both
+    for( int i = offs; i < size; i++ ) { // optimization advised / chose either size or MAXBIT, no need for both
       for( int y = 7; y >= 0 && n < MAXBIT; y-- )  {  
 		   if((packet[i] >> y) & 1) {
             PUSHONE();
@@ -215,16 +215,16 @@ int main(void)
 			  if(bit_is_clear(TRIG, PIN_TRIG))   {
                     transmit(1);
                     key = 0;
-                    }  // long keypress
+                    } 		 // long keypress
                         } else
                    if(bit_is_set(TRIG, PIN_TRIG) &&  key != 0)   {
 		    transmit(0);
-                    key = 0;  // short keypress
+                    key = 0;  	 // short keypress
                    }
                 }  
 		wdt_reset();
-        }      // tick out
-    }  // for() out
-}          // main out
+        }    	 // tick out
+    } 		 // for() out
+}         	 // main out
 //*****************************************************************************
 //*****************************************************************************
