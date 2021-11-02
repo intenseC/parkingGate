@@ -133,10 +133,10 @@ static void init_io(void)
 
 static void timer_init (void)
 {   
-	  cli();
+cli();
     TCCR0B |= (1 << CS02) | (0 << CS01) | (1 << CS00);            //enable timer0 with 1024 prescaler - 9375Hz
     TCNT0 = 0;
-	  sei();
+sei();
 }
 //*****************************************************************************
 //*****************************************************************************
@@ -145,10 +145,10 @@ static void timer_init (void)
 
 static void transmitPacket(uint8_t *packet, uint8_t size)
 {
-	  uint8_t offs = 1;  // one byte discarded, nibble of zeroes inserted instead
-	  int n = 0; 
-	  sbi(PORT_PWM, PIN_PWM);
-      cbi(PORT_AUX_LED, PIN_LED);
+    uint8_t offs = 1;  // one byte discarded, nibble of zeroes inserted instead
+	int n = 0; 
+	sbi(PORT_PWM, PIN_PWM);
+        cbi(PORT_AUX_LED, PIN_LED);
 	  _delay_us(HEADER);
           /* INSERT FOUR ZEROES */
     for( int i = 0; i < 4; i++ ) {
@@ -157,15 +157,15 @@ static void transmitPacket(uint8_t *packet, uint8_t size)
     }
 	     // byte parser
     for( int i = offs; i < size; i++ ) { // optimization needed / chose either size or MAXBIT, no need for both
-	    for( int y = 7; y >= 0 && n < MAXBIT; y-- )  {  
+      for( int y = 7; y >= 0 && n < MAXBIT; y-- )  {  
 		   if((packet[i] >> y) & 1) {
-               PUSHONE();
+            PUSHONE();
         } else {
             PUSHZERO();
         } 
         n++;
-        }
-	}
+      }
+    }
       cbi(PORT_PWM, PIN_PWM);
       sbi(PORT_AUX_LED, PIN_LED);
       _delay_us(GAP);
@@ -185,7 +185,7 @@ static void transmit(uint8_t lap)
 	    memcpy(buff + sizeof(ptrKey->hdr), ptrKey->rollingKeys[x],
               sizeof(ptrKey->rollingKeys[x]));
 	      for(int y = PULSETRAIN; y > 0; y--)
-                transmitPacket(buff, 7); 
+               transmitPacket(buff, 7); 
 	          wdt_reset(); 
 	         _delay_ms(REFRAIN); 
         }
@@ -204,22 +204,22 @@ int main(void)
 //*****************************************************************************
 
      for(;;)  {      //  loop start
-        if( TCNT0 >= 255 ) // 37 Hz
-	    { 
-		     // a simple variable timed keypress handler
-               if(key == 0)   
-				{
-			    longPessTmr = LONGPRESSGAP;
-			  	if(bit_is_clear(TRIG, PIN_TRIG)) key = 1;
-                }	else  {        
-				if( --longPessTmr == 0)   { 
-			        if(bit_is_clear(TRIG, PIN_TRIG))   {
+        if( TCNT0 >= 255 )   // ~37 Hz
+	 { 
+		// a simple variable timed keypress handler
+		// long press will invoke the second key
+         if(key == 0) {
+			longPessTmr = LONGPRESSGAP;
+			if(bit_is_clear(TRIG, PIN_TRIG)) key = 1;
+                } else {        
+			if( --longPessTmr == 0)   { 
+			  if(bit_is_clear(TRIG, PIN_TRIG))   {
                     transmit(1);
                     key = 0;
                     }  // long keypress
-                } else
+                        } else
                    if(bit_is_set(TRIG, PIN_TRIG) &&  key != 0)   {
-				    transmit(0);
+		    transmit(0);
                     key = 0;  // short keypress
                    }
                 }  
