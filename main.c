@@ -2,7 +2,7 @@
 /*
 *     ATtiny13  433mHz    Parking     Lot   Gate  Opener
 *
-*     Simon  Katznelson  'intenceC'
+*     Simon  Katznelson  'intenseC'
 *     https://intensecircuit.com/
 *
 *     ver. 002a      
